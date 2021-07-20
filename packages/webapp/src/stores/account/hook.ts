@@ -14,7 +14,7 @@ import * as sign_tools from 'loopring-sdk'
 
 import { connectorsByName } from 'defs/web3_defs'
 
-import { ChainId, ConnectorNames, dumpError400, ExchangeAPI, GetOffchainFeeAmtRequest, OffchainFeeReqType, sleep, UpdateAccountRequestV3, UserAPI, VALID_UNTIL, } from 'loopring-sdk'
+import { ConnectorNames, dumpError400, ExchangeAPI, sleep, UpdateAccountRequestV3, UserAPI, VALID_UNTIL, } from 'loopring-sdk'
 
 import { toHex, toBig, } from 'loopring-sdk'
 
@@ -414,10 +414,8 @@ export function useCheckAccStatus() {
 
     // const { updateWalletLayer1,resetLayer1} = useWalletLayer1();
     // const { updateWalletLayer2, resetLayer2} = useWalletLayer2()
-
     // console.log('prevChainId:', prevChainId, ' chainId:', chainId)
     // console.log('prevWeb3Account:', prevWeb3Account, ' web3Account:', web3Account)
-
     // console.log(exchangeApi, userApi, account, 'prevChainId:', prevChainId, 'chainId:', chainId, 'web3Account:', web3Account)
 
     const { tradingInfo } = useGetTradingInfo()

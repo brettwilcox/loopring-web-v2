@@ -2,6 +2,7 @@ import React from 'react';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { AmmRecordTable, TradeTitle, useImage, useSettings, ScaleAreaChart, ChartType } from '@loopring-web/component-lib';
 import {
+    AvatarCoinStyled,
     Currency,
     EmptyValueTag,
     getThousandFormattedNumbers,
@@ -90,8 +91,11 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     const _handlePageChange = React.useCallback((page: number) => {
         setPage(page);
     }, [])
-    const sellIconHasLoaded = useImage(coinPairInfo.myCoinA?.icon ? coinPairInfo.myCoinA?.icon : '').hasLoaded;
-    const buyIconHasLoaded = useImage(coinPairInfo.myCoinB?.icon ? coinPairInfo.myCoinB?.icon : '').hasLoaded;
+    // const sellIconHasLoaded = useImage(coinPairInfo.myCoinA?.icon ? coinPairInfo.myCoinA?.icon : '').hasLoaded;
+    // const buyIconHasLoaded = useImage(coinPairInfo.myCoinB?.icon ? coinPairInfo.myCoinB?.icon : '').hasLoaded;
+    const {coinJson} = useSettings();
+    const coinAIcon: any = coinJson [ coinPairInfo.myCoinA.simpleName ];
+    const coinBIcon: any = coinJson [ coinPairInfo.myCoinB.simpleName ];
 
     return <>
 
@@ -185,12 +189,22 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         </Typography>
                         <Typography component={'span'} display={'flex'} flexDirection={'row'} alignItems={'center'}
                                     style={{textTransform: 'capitalize'}} color={'textPrimary'}>
-                            <Typography component={'span'} marginRight={1 / 2}
-                            >
-                                <Avatar variant="square" sizes={'small'} alt={'coinLogo'}
-                                    // src={coinAInfo?.icon}
-                                        src={sellIconHasLoaded ? coinPairInfo?.myCoinA?.icon : 'static/images/icon-default.png'}/>
-                            </Typography>
+                            <Box component={'span'} className={'logo-icon'} height={'var(--chart-title-coin-size)'}
+                                 width={'var(--chart-title-coin-size)'} alignItems={'center'} justifyContent={'center'}>
+                                {coinAIcon ?
+                                    <AvatarCoinStyled imgX={coinAIcon.x} imgY={coinAIcon.y}
+                                                      imgHeight={coinAIcon.height}
+                                                      imgWidth={coinAIcon.width} size={28}
+                                                      variant="circular" alt={coinPairInfo?.myCoinA?.simpleName as string}
+                                        // src={sellData?.icon}
+                                                      src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                                    : <Avatar variant="circular" alt={coinPairInfo?.myCoinA?.simpleName as string} style={{
+                                        height: 'var(--chart-title-coin-size)',
+                                        width: 'var(--chart-title-coin-size)'
+                                    }}
+                                        // src={sellData?.icon}
+                                              src={'static/images/icon-default.png'}/>
+                                }</Box>
                             <Typography component={'span'}>{getThousandFormattedNumbers(coinPairInfo.totalA,6)}</Typography>
                             <Typography component={'span'}>
                                 {/*<HiddenHidden>{t('labelLPTotal')}</Hidden>*/}
@@ -200,12 +214,27 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         </Typography>
                         <Typography component={'span'} display={'flex'} flexDirection={'row'} alignItems={'center'}  marginTop={1}
                                     style={{textTransform: 'capitalize'}}>
-                            <Typography component={'span'} marginRight={1 / 2}
-                                        color={'textSecondary'}>
-                                <Avatar variant="square" sizes={'small'} alt={'coinLogo'}
-                                    // src={coinBInfo?.icon}
-                                        src={buyIconHasLoaded ? coinPairInfo?.myCoinB?.icon : 'static/images/icon-default.png'}/>
-                            </Typography>
+                            {/*<Typography component={'span'} marginRight={1 / 2}*/}
+                            {/*            color={'textSecondary'}>*/}
+                            {/*    */}
+                            {/*    /!*<Avatar variant="square" sizes={'small'} alt={'coinLogo'}*!/*/}
+                            {/*    /!*    // src={coinBInfo?.icon}*!/*/}
+                            {/*    /!*        src={buyIconHasLoaded ? coinPairInfo?.myCoinB?.icon : 'static/images/icon-default.png'}/>*!/*/}
+                            {/*</Typography>*/}
+                            <Box component={'span'} className={'logo-icon'} height={'var(--chart-title-coin-size)'} marginRight={1 / 2}
+                                 width={'var(--chart-title-coin-size)'} alignItems={'center'}
+                                 justifyContent={'center'}>{coinBIcon ?
+                                <AvatarCoinStyled imgX={coinBIcon.x} imgY={coinBIcon.y} imgHeight={coinBIcon.height}
+                                                  imgWidth={coinBIcon.width} size={28}
+                                                  variant="circular" alt={coinPairInfo?.myCoinB?.simpleName as string}
+                                    // src={sellData?.icon}
+                                                  src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                                : <Avatar variant="circular" alt={coinPairInfo?.myCoinB?.simpleName as string} style={{
+                                    height: 'var(--chart-title-coin-size)',
+                                    width: 'var(--chart-title-coin-size)'
+                                }}
+                                    // src={sellData?.icon}
+                                          src={'static/images/icon-default.png'}/>} </Box>
                             <Typography component={'span'}>{getThousandFormattedNumbers(coinPairInfo.totalB,6)}</Typography>
                             <Typography component={'span'}>
                                 {/*<Hidden>{t('labelLPTotal')}</Hidden>*/}
