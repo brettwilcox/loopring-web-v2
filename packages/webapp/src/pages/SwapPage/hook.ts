@@ -1,4 +1,12 @@
-import { AccountStatus, fnType, IBData, SagaStatus, TradeCalcData, TradeFloat, } from '@loopring-web/common-resources';
+import {
+    AccountStatus, CoinInfo,
+    CoinMap,
+    fnType,
+    IBData,
+    SagaStatus,
+    TradeCalcData,
+    TradeFloat,
+} from '@loopring-web/common-resources';
 import React from 'react';
 import { LoopringAPI } from 'api_wrapper';
 import { useTokenMap } from 'stores/token';
@@ -359,7 +367,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                     balance: walletMap ? walletMap[ tradeCalcData.coinSell as string ]?.count : 0
                 },
                 buy: {
-                    belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[ tradeCalcData.coinBuy ]?.simpleName : undefined,
+                    belong: tradeCalcData.buyCoinInfoMap ? tradeCalcData.buyCoinInfoMap[ tradeCalcData.coinBuy ]?.simpleName : undefined,
                     balance: walletMap ? walletMap[ tradeCalcData.coinBuy as string ]?.count : 0
                 },
             } as SwapTradeData<IBData<C>>)
@@ -490,7 +498,18 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const resetTradeCalcData = React.useCallback((_tradeData, market?, depth?, type?) => {
         if (coinMap && tokenMap && marketMap && marketArray && ammMap) {
             let coinA: string, coinB: string;
-            if (type && _tradeData) {
+            if( type === 'exchange' && _tradeData ){
+                myLog('tradeData,tradeData,tradeCalcData',tradeData, _tradeData, tradeCalcData);
+                setTradeData({...tradeData,..._tradeData} as SwapTradeData<IBData<C>>);
+                setTradeCalcData({...tradeCalcData,
+                    coinSell:tradeCalcData.coinBuy, //name
+                    coinBuy:tradeCalcData.coinSell,
+                    StoB: tradeCalcData.BtoS,
+                    BtoS: tradeCalcData.StoB,
+                    sellCoinInfoMap:tradeCalcData.buyCoinInfoMap,
+                    buyCoinInfoMap:tradeCalcData.sellCoinInfoMap})
+
+            } else if (type && _tradeData) {
                 coinA = _tradeData.sell.belong
                 coinB = _tradeData.buy.belong
                 myLog('coinA,coinB', coinA, coinB);
@@ -590,8 +609,11 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 }
                 break
             case SwapType.EXCHANGE_CLICK:
-                myLog('Exchange Click')
-                resetTradeCalcData(undefined, `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`, depth)
+                myLog('Exchange Click');
+                if(_tradeData){
+                    _tradeData.sell.tradeValue = undefined as any;
+                }
+                resetTradeCalcData(_tradeData, `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`, depth,'exchange')
                 break
             default:
                 myLog('resetSwap default')
